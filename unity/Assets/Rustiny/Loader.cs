@@ -44,12 +44,12 @@ namespace rustiny
             {
                 foreach (var type in assembly.GetTypes())
                 {
-                    var dllTypeAttributes = type.GetCustomAttributes(typeof(DllBindAttr), true);
+                    var dllTypeAttributes = type.GetCustomAttributes(typeof(DllBindAttribute), true);
                     if (dllTypeAttributes.Length == 0)
                     {
                         continue;
                     }
-                    var dllBind = dllTypeAttributes[0] as DllBindAttr;
+                    var dllBind = dllTypeAttributes[0] as DllBindAttribute;
                     var path = m_path + dllBind.DllName + "." + m_ext;
 
                     var dll = SystemLibrary.LoadLibrary(path);
@@ -63,13 +63,13 @@ namespace rustiny
                     foreach (var field in fields)
                     {
 
-                        var fieldAttributes = field.GetCustomAttributes(typeof(DllMethodBindAttr), true);
+                        var fieldAttributes = field.GetCustomAttributes(typeof(DllMethodBindAttribute), true);
                         if (fieldAttributes.Length == 0)
                         {
                             continue;
                         }
 
-                        var methodPtr = SystemLibrary.GetProcAddress(dll, (fieldAttributes[0] as DllMethodBindAttr).MethodName);
+                        var methodPtr = SystemLibrary.GetProcAddress(dll, (fieldAttributes[0] as DllMethodBindAttribute).MethodName);
                         Debug.Log(methodPtr);
                         var methodDelegate = Marshal.GetDelegateForFunctionPointer(methodPtr, field.FieldType);
                         field.SetValue(null, methodDelegate);
@@ -85,22 +85,22 @@ namespace rustiny
     }
 
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
-    public class DllBindAttr : Attribute
+    public class DllBindAttribute : Attribute
     {
         public string DllName { get; private set; }
 
-        public DllBindAttr(string name)
+        public DllBindAttribute(string name)
         {
             DllName = name;
         }
     }
 
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
-    public class DllMethodBindAttr : Attribute
+    public class DllMethodBindAttribute : Attribute
     {
         public string MethodName { get; private set; }
 
-        public DllMethodBindAttr(string methodName)
+        public DllMethodBindAttribute(string methodName)
         {
             MethodName = methodName;
         }

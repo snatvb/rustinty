@@ -7,39 +7,47 @@ using System;
 
 namespace rustiny
 {
-    [DllBindAttr("rustiny_game")]
-    static class RustinyApi
+    [DllBind("rustiny_game")]
+    public static class RustinyApi
     {
-        [DllMethodBindAttr("rustiny_name")]
+        [DllMethodBind("rustiny_name")]
         public static _GetName GetName = null;
         public delegate string _GetName();
 
-        [DllMethodBindAttr("rustiny_version")]
+        [DllMethodBind("rustiny_version")]
         public static _GetVersion GetVersion = null;
         public delegate string _GetVersion();
 
-        [DllMethodBindAttr("hello_world")]
+        [DllMethodBind("hello_world")]
         public static _HelloWorld HelloWorld = null;
         public delegate string _HelloWorld();
 
-        [DllMethodBindAttr("rustiny_initialize")]
+        [DllMethodBind("rustiny_initialize")]
         public static _Initialize Initialize = null;
         public delegate void _Initialize();
 
-        [DllMethodBindAttr("rustiny_update")]
+        [DllMethodBind("rustiny_update")]
         public static _Update Update = null;
         public delegate void _Update();
 
-        [DllMethodBindAttr("rustiny_callback")]
+        [DllMethodBind("rustiny_callback")]
         public static _TestCallback TestCallback = null;
-        public delegate string _TestCallback([MarshalAs(UnmanagedType.FunctionPtr)] DTestCallback a_callback);
-        [UnmanagedFunctionPointer(CallingConvention.StdCall)] public delegate void DTestCallback(UInt64 a_identifierBits);
+        public delegate string _TestCallback([MarshalAs(UnmanagedType.FunctionPtr)] DTestCallback c_callback);
+        [UnmanagedFunctionPointer(CallingConvention.StdCall)] public delegate void DTestCallback(UInt64 c_identifierBits);
 
-        [DllMethodBindAttr("rustiny_logger_bind")]
+        [DllMethodBind("rustiny_logger_bind")]
         public static _LoggerBind LoggerBind = null;
-        public delegate string _LoggerBind([MarshalAs(UnmanagedType.FunctionPtr)] DLoggerBind a_callback);
-        [UnmanagedFunctionPointer(CallingConvention.StdCall)] public delegate void DLoggerBind(LogMessage a_message);
+        public delegate string _LoggerBind([MarshalAs(UnmanagedType.FunctionPtr)] DLoggerBind c_callback);
+        [UnmanagedFunctionPointer(CallingConvention.StdCall)] public delegate void DLoggerBind(LogMessage c_message);
 
+        [DllMethodBind("rustiny_world_sync_transform_bind")]
+        public static _SyncTransform SyncTransform = null;
+        public delegate void _SyncTransform([MarshalAs(UnmanagedType.FunctionPtr)] DSyncTransform c_callback);
+        [UnmanagedFunctionPointer(CallingConvention.StdCall)] public delegate void DSyncTransform(ulong id, CTransform c_transform);
+
+        [DllMethodBind("rustiny_world_sync_transform_from_unity")]
+        public static _SyncPushTransform SyncPushTransform = null;
+        public delegate void _SyncPushTransform(ulong id, CTransform c_transform);
     }
 
 
@@ -59,5 +67,22 @@ namespace rustiny
         Info,
         Debug,
         Trace,
+    }
+
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct CVec3
+    {
+        public float x;
+        public float y;
+        public float z;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct CTransform
+    {
+        public CVec3 position;
+        public CVec3 rotation;
+        public CVec3 scale;
     }
 }
