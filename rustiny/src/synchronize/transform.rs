@@ -1,5 +1,5 @@
 use bevy::prelude::*;
-use log::{error, trace};
+use log::{error, trace, debug};
 
 use crate::{
     components::{transform::Transform, *},
@@ -28,6 +28,7 @@ pub extern "C" fn rustiny_world_sync_transform_from_unity(entity_id: EntityId, n
 
 pub fn sync_to_unity(query: Query<(Entity, &Transform), (With<SyncableTag>, Changed<Transform>)>) {
     for (entity, transform) in query.iter() {
+        debug!("transform was changed {:?} {:?}", entity, transform);
         crate::world::send_component_transform(entity, transform);
     }
 }

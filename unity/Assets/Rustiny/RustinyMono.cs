@@ -9,25 +9,10 @@ namespace rustiny
     {
         public ulong Id;
 
-        private RustinyBridge m_bridge;
-
-
-        private void Awake()
+        public void SyncTransform(CTransform c_transform)
         {
-            var brigdes = FindObjectsOfType<RustinyBridge>();
-            Debug.Assert(brigdes.Length == 1); // should be one of RustinyBridge
-            m_bridge = brigdes[0];
-
-            m_bridge.dSubscribeUpdateTransform += SyncTransform;
-        }
-
-        private void SyncTransform(ulong id, CTransform c_transform)
-        {
-            if (Id == id)
-            {
-                Converters.ApplyTransformFromC(transform, c_transform);
-                transform.hasChanged = false;
-            }
+            Converters.ApplyTransformFromC(transform, c_transform);
+            transform.hasChanged = false;
         }
 
         private void Update()

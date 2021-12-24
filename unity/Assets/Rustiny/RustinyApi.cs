@@ -44,6 +44,10 @@ namespace rustiny
         public static _SpawnPrefabBind SpawnPrefabBind = null;
         public delegate void _SpawnPrefabBind([MarshalAs(UnmanagedType.FunctionPtr)] DSpawnPrefabBind c_callback);
         [UnmanagedFunctionPointer(CallingConvention.StdCall)] public delegate void DSpawnPrefabBind(ulong id, string name, CTransform c_transform);
+
+        [DllMethodBind("rustiny_world_sync_input_from_unity")]
+        public static _PushInput PushInput = null;
+        public delegate void _PushInput(KeyCode keyCode);
     }
 
 

@@ -1,3 +1,4 @@
+extern crate derive_more;
 extern crate lazy_static;
 pub use log::{debug, error, info, log, trace};
 use std::{ffi::CString, os::raw::c_char};
@@ -10,6 +11,7 @@ pub mod plugin;
 mod synchronize;
 pub mod types;
 pub mod world;
+pub mod prelude;
 
 #[no_mangle]
 pub extern "C" fn rustiny_name() -> *mut c_char {

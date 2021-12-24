@@ -1,3 +1,7 @@
+use std::{fmt::Display};
+use derive_more::{Deref, DerefMut};
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
 #[repr(i32)]
 pub enum KeyCode {
     None = 0,
@@ -319,4 +323,14 @@ pub enum KeyCode {
     Joystick8Button17 = 507, // 0x000001FB
     Joystick8Button18 = 508, // 0x000001FC
     Joystick8Button19 = 509, // 0x000001FD
+}
+
+
+#[derive(Debug, Deref, DerefMut, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
+pub struct InputEvent(pub KeyCode);
+
+impl Display for InputEvent {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "Input: KeyCode({})", self.0 as i32)
+    }
 }
