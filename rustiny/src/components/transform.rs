@@ -1,4 +1,4 @@
-use cgmath::{Vector3};
+use cgmath::Vector3;
 
 // #[derive(Copy, Clone, Debug)]
 // #[repr(C)]
@@ -41,10 +41,19 @@ impl Into<CTransform> for Transform {
     }
 }
 
-
 impl Into<Transform> for CTransform {
     fn into(self) -> Transform {
         Transform {
+            position: self.position,
+            rotation: self.rotation,
+            scale: self.scale,
+        }
+    }
+}
+
+impl Into<CTransform> for &Transform {
+    fn into(self) -> CTransform {
+        CTransform {
             position: self.position,
             rotation: self.rotation,
             scale: self.scale,

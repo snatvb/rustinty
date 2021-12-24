@@ -1,11 +1,6 @@
-
 use log::{LevelFilter, Log, Metadata, Record};
-use simplelog::{Config, SharedLogger, WriteLogger, CombinedLogger};
-use std::{
-    ffi::{CString},
-    os::raw::c_char,
-};
-
+use simplelog::{CombinedLogger, Config, SharedLogger, WriteLogger};
+use std::{ffi::CString, os::raw::c_char};
 
 #[repr(C)]
 pub struct LogMessage {
@@ -25,7 +20,6 @@ impl LogMessage {
     }
 }
 
-
 #[no_mangle]
 pub extern "C" fn rustiny_logger_bind(callback: extern "C" fn(LogMessage)) {
     log::info!("rustiny_logger_bind");
@@ -42,12 +36,10 @@ pub extern "C" fn rustiny_logger_bind(callback: extern "C" fn(LogMessage)) {
     log::info!("Logger initialized");
 }
 
-
 pub struct UnityLogger {
     pub level: LevelFilter,
     logger_callback: Box<dyn Fn(LogMessage) + Send + Sync + 'static>,
 }
-
 
 impl log::Log for UnityLogger {
     fn enabled(&self, metadata: &Metadata) -> bool {
@@ -59,7 +51,6 @@ impl log::Log for UnityLogger {
         }
 
         (self.logger_callback)(LogMessage::new(record));
-
     }
 
     fn flush(&self) {}

@@ -1,5 +1,6 @@
 using UnityEngine;
 using System;
+using System.Collections.Generic;
 
 namespace rustiny
 {
@@ -7,22 +8,25 @@ namespace rustiny
     {
         public RustinyApi.DSyncTransform dSubscribeUpdateTransform;
 
-        DllLoader m_loader;
-        RustinyApi.DTestCallback m_dTestCallback;
-        Logger m_logger;
-        [SerializeField]
-        Level m_logLevel;
+        private DllLoader m_loader;
+        private RustinyApi.DSpawnPrefabBind m_dSpawnPrefabBind;
+        private Logger m_logger;
+        private Dictionary<ulong, GameObject> m_gameObjects = new Dictionary<ulong, GameObject>();
 
-        void Start()
+        [SerializeField]
+        private Level m_logLevel;
+        [SerializeField]
+        private RustinyPrefabs m_prefabs;
+
+        private void Start()
         {
             m_logger.Initialize();
             RustinyApi.Initialize();
-            Debug.Log("Loaded " + RustinyApi.GetName() + " v" + RustinyApi.GetVersion());
-            Debug.Log(RustinyApi.HelloWorld());
-            m_dTestCallback += TestCallback;
-            RustinyApi.TestCallback(m_dTestCallback);
+            Debug.LogFormat("Loaded {0} v{1}", RustinyApi.GetName(), RustinyApi.GetVersion());
             dSubscribeUpdateTransform += LogUpdateTransform;
             RustinyApi.SyncTransform(dSubscribeUpdateTransform);
+            m_dSpawnPrefabBind += SpawnPrefab;
+            RustinyApi.SpawnPrefabBind(m_dSpawnPrefabBind);
         }
 
         private void Awake()
@@ -33,12 +37,12 @@ namespace rustiny
         }
 
         // Update is called once per frame
-        void Update()
+        private void Update()
         {
             RustinyApi.Update();
         }
 
-        void OnDestroy()
+        private void OnDestroy()
         {
             m_loader.Destroy();
             m_loader = null;
@@ -49,9 +53,22 @@ namespace rustiny
             Debug.Log("Updated transform " + id);
         }
 
-        public void TestCallback(UInt64 a_identifierBits)
+        private void SpawnPrefab(ulong id, string name, CTransform c_transform)
         {
-            Debug.Log(a_identifierBits);
+            Debug.LogFormat("Spawn prefab id({0}), with name({1})", id, name);
+            if (m_prefabs.PrefabBindings.TryGetValue(name, out PrefabBinding prefabBinding))
+            {
+                var spawned = Instantiate(prefabBinding.Prefab);
+                var mono = spawned.AddComponent<RustinyMono>();
+                mono.Id = id;
+                spawned.transform.hasChanged = false;
+                Converters.ApplyTransformFromC(spawned.transform, c_transform);
+                m_gameObjects.Add(id, spawned);
+            }
+            else
+            {
+                Debug.Log("Unknown prefab to spawn");
+            }
         }
     }
 }

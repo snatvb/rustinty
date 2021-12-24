@@ -70,7 +70,6 @@ namespace rustiny
                         }
 
                         var methodPtr = SystemLibrary.GetProcAddress(dll, (fieldAttributes[0] as DllMethodBindAttribute).MethodName);
-                        Debug.Log(methodPtr);
                         var methodDelegate = Marshal.GetDelegateForFunctionPointer(methodPtr, field.FieldType);
                         field.SetValue(null, methodDelegate);
                     }

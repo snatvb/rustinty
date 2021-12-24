@@ -25,8 +25,7 @@ namespace rustiny
         {
             if (Id == id)
             {
-                transform.position = CVecToVec(c_transform.position);
-                transform.localScale = CVecToVec(c_transform.scale);
+                Converters.ApplyTransformFromC(transform, c_transform);
                 transform.hasChanged = false;
             }
         }
@@ -42,27 +41,8 @@ namespace rustiny
 
         private void SyncPushTranform(UInt64 id, Transform transform)
         {
-            var c_transform = new CTransform
-            {
-                position = VecToCVec(transform.position),
-                rotation = new CVec3(),
-                scale = VecToCVec(transform.localScale),
-            };
-        RustinyApi.SyncPushTransform(id, c_transform);
-        }
-
-        private Vector3 CVecToVec(CVec3 vec) {
-            return new Vector3(vec.x, vec.y, vec.z);
-        }
-
-        private CVec3 VecToCVec(Vector3 vec)
-        {
-            return new CVec3
-            {
-                x = vec.x,
-                y = vec.y,
-                z = vec.z
-            };
+            var c_transform = Converters.TransformToCTransform(transform);
+            RustinyApi.SyncPushTransform(id, c_transform);
         }
     }
 }

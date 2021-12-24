@@ -18,10 +18,6 @@ namespace rustiny
         public static _GetVersion GetVersion = null;
         public delegate string _GetVersion();
 
-        [DllMethodBind("hello_world")]
-        public static _HelloWorld HelloWorld = null;
-        public delegate string _HelloWorld();
-
         [DllMethodBind("rustiny_initialize")]
         public static _Initialize Initialize = null;
         public delegate void _Initialize();
@@ -29,11 +25,6 @@ namespace rustiny
         [DllMethodBind("rustiny_update")]
         public static _Update Update = null;
         public delegate void _Update();
-
-        [DllMethodBind("rustiny_callback")]
-        public static _TestCallback TestCallback = null;
-        public delegate string _TestCallback([MarshalAs(UnmanagedType.FunctionPtr)] DTestCallback c_callback);
-        [UnmanagedFunctionPointer(CallingConvention.StdCall)] public delegate void DTestCallback(UInt64 c_identifierBits);
 
         [DllMethodBind("rustiny_logger_bind")]
         public static _LoggerBind LoggerBind = null;
@@ -48,6 +39,11 @@ namespace rustiny
         [DllMethodBind("rustiny_world_sync_transform_from_unity")]
         public static _SyncPushTransform SyncPushTransform = null;
         public delegate void _SyncPushTransform(ulong id, CTransform c_transform);
+
+        [DllMethodBind("rustiny_world_spawn_prefab_bind")]
+        public static _SpawnPrefabBind SpawnPrefabBind = null;
+        public delegate void _SpawnPrefabBind([MarshalAs(UnmanagedType.FunctionPtr)] DSpawnPrefabBind c_callback);
+        [UnmanagedFunctionPointer(CallingConvention.StdCall)] public delegate void DSpawnPrefabBind(ulong id, string name, CTransform c_transform);
     }
 
 

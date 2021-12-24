@@ -19,14 +19,11 @@ fn rustiny_test_system(query: Query<Entity>) {
 }
 
 fn start(mut commands: Commands) {
-    commands
-        .spawn()
-        .insert(Prefab::new("light"))
-        .insert(Transform {
-            position: Vector3::new(10.0, 0.0, 0.0),
-            rotation: Vector3::new(0.0, 0.0, 0.0),
-            scale: Vector3::new(1.0, 1.0, 1.0),
-        });
+    commands.spawn().insert(Prefab::new("light")).insert(Transform {
+        position: Vector3::new(10.0, 0.0, 0.0),
+        rotation: Vector3::new(0.0, 0.0, 0.0),
+        scale: Vector3::new(1.0, 1.0, 1.0),
+    });
 }
 
 impl Game {
@@ -37,10 +34,7 @@ impl Game {
 
         time.update();
         app.insert_resource(time);
-        app.add_system_to_stage(
-            CoreStage::First,
-            (|mut time: ResMut<Time>| time.update()).exclusive_system(),
-        );
+        app.add_system_to_stage(CoreStage::First, (|mut time: ResMut<Time>| time.update()).exclusive_system());
 
         app.add_startup_system(start.system());
 

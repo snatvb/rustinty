@@ -1,15 +1,15 @@
 extern crate lazy_static;
-pub use log::{debug, error, info, trace, log};
+pub use log::{debug, error, info, log, trace};
 use std::{ffi::CString, os::raw::c_char};
 
 pub mod components;
 pub mod core;
-pub mod types;
-pub mod world;
-pub mod plugin;
 mod game;
 mod logger;
+pub mod plugin;
 mod synchronize;
+pub mod types;
+pub mod world;
 
 #[no_mangle]
 pub extern "C" fn rustiny_name() -> *mut c_char {
@@ -23,13 +23,7 @@ pub extern "C" fn rustiny_version() -> *mut c_char {
 
 #[no_mangle]
 pub extern "C" fn rustiny_update() {
-    info!("game update");
     unsafe { game::get_unwrap().update() };
-}
-
-#[no_mangle]
-pub extern "C" fn rustiny_callback(callback: extern "C" fn(u64)) {
-    callback(92);
 }
 
 pub fn rustiny_initialize<T: bevy::prelude::Plugin>(game_plugin: T) {
