@@ -33,7 +33,11 @@ pub extern "C" fn rustiny_callback(callback: extern "C" fn(u64)) {
 }
 
 pub fn rustiny_initialize<T: bevy::prelude::Plugin>(game_plugin: T) {
-    info!("Rustiny initialize");
+    std::panic::set_hook(Box::new(|info| {
+        error!("PANIC {:?}", info);
+    }));
+
+    debug!("Rustiny initialize");
     let game = game::Game::setup(game_plugin);
     info!("Game setup success");
     unsafe {

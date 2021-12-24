@@ -46,6 +46,7 @@ impl Game {
 
         app.add_plugin(crate::synchronize::SynchronizePlugin);
 
+        debug!("Add game plugin");
         app.add_plugin(game_plugin);
         app.set_runner(runner);
         app.add_system_to_stage(CoreStage::First, rustiny_test_system.system());
